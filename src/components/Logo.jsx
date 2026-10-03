@@ -1,20 +1,28 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-export default function Logo({ className = "h-8", light = false }) {
+/**
+ * Logo component using the official Cineport Cinemas SVG logo.
+ * - light={true}  → white logo (for dark/coloured backgrounds like footer, hero)
+ * - light={false} → dark logo (for light backgrounds like navbar) via CSS inversion
+ */
+export default function Logo({ className = "h-10", light = false }) {
   return (
-    <Link to="/" className="inline-flex items-center gap-2 group tracking-tight select-none">
-      <div className="flex items-center">
-        {/* Cineport stylized typography with star accent */}
-        <span className={`font-heading font-black text-2xl tracking-tight transition-colors ${
-          light ? 'text-white' : 'text-[#1C0B38]'
-        }`}>
-          cine<span className="relative inline-block text-[#FF8A00]">
-            p
-            <span className="absolute -top-1.5 -right-1 text-[#FF8A00] animate-pulse">✦</span>
-          </span>ort
-        </span>
-      </div>
+    <Link to="/" className="inline-flex items-center select-none" aria-label="Cineport Cinemas – Home">
+      <img
+        src="/logo.svg"
+        alt="Cineport Cinemas"
+        className={`${className} w-auto object-contain transition-all duration-200 ${
+          light
+            ? ''                                           // white logo on dark bg — use as-is
+            : 'brightness-0 saturate-100 invert-[20%] hue-rotate-[240deg]'  // dark purple tint for light bg
+        }`}
+        style={
+          light
+            ? {}
+            : { filter: 'brightness(0) saturate(100%) invert(13%) sepia(40%) saturate(800%) hue-rotate(240deg) brightness(0.8)' }
+        }
+      />
     </Link>
   );
 }
