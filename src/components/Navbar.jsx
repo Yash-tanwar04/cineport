@@ -1,123 +1,236 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink, Link, useLocation } from 'react-router-dom';
-import { Menu, X, Sparkles } from 'lucide-react';
-import AudioAtmosphere from './AudioAtmosphere';
-import MobileDrawer from './MobileDrawer';
+import { Search, User, Menu, X, ChevronDown, Sparkles, Film, Phone } from 'lucide-react';
+import Logo from './Logo';
 
-const NAV_LINKS = [
-  { name: 'HOME', path: '/' },
-  { name: 'ABOUT', path: '/about' },
-  { name: 'EXPERIENCE', path: '/experience' },
-  { name: 'AWARDS', path: '/awards' },
-  { name: 'SHOW FLOW', path: '/show-flow' },
-  { name: 'CELEBRITIES', path: '/celebrities' },
-  { name: 'PERFORMANCES', path: '/performances' },
-  { name: 'LEGACY', path: '/legacy' },
-  { name: 'SPONSORS', path: '/sponsors' },
-  { name: 'MEDIA', path: '/media' },
-  { name: 'CONTACT', path: '/contact' }
-];
-
-export default function Navbar() {
-  const [isScrolled, setIsScrolled] = useState(false);
+export default function Navbar({ onOpenBooking, onOpenSearch, onOpenSignIn }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [moreDropdownOpen, setMoreDropdownOpen] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 30);
+      setScrolled(window.scrollY > 20);
     };
-    window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Close mobile drawer on route change
+  // Close menus on route change
   useEffect(() => {
     setMobileMenuOpen(false);
+    setMoreDropdownOpen(false);
   }, [location.pathname]);
 
+  const navLinks = [
+    { name: "Home", path: "/" },
+    { name: "Cinemas", path: "/cinemas" },
+    { name: "Experiences", path: "/experiences" },
+    { name: "Food & Drink", path: "/food-drink" },
+    { name: "Events", path: "/events" },
+    { name: "Partner With Us", path: "/partner" },
+    { name: "Investors", path: "/investors" },
+    { name: "About", path: "/about" },
+  ];
+
+  const moreLinks = [
+    { name: "Cineport Club", path: "/club", desc: "Exclusive rewards & membership tiers" },
+    { name: "Night Builder", path: "/night-builder", desc: "Craft your complete custom night out" },
+    { name: "Careers", path: "/careers", desc: "Join our fast-growing hospitality team" },
+    { name: "Stories & News", path: "/stories", desc: "Latest launches and press releases" },
+    { name: "Contact", path: "/contact", desc: "Connect with our offices across India" },
+  ];
+
   return (
-    <>
-      <header
-        className={`fixed top-0 inset-x-0 z-50 transition-all duration-500 ${
-          isScrolled
-            ? 'bg-[#07070a]/90 backdrop-blur-xl border-b border-[#D4AF37]/20 py-2.5 shadow-[0_10px_30px_rgba(0,0,0,0.8)]'
-            : 'bg-gradient-to-b from-black/80 via-black/30 to-transparent py-4 sm:py-5 border-b border-transparent'
-        }`}
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-          {/* Logo on Left */}
-          <Link
-            to="/"
-            className="flex items-center gap-3 group select-none transition-transform duration-300 hover:scale-[1.02]"
-            aria-label="HEIA Homepage"
-          >
-            <img
-              src="/assets/logo/association.png"
-              alt="HEIA — Haryana Entertainment Industry Awards"
-              className="h-9 sm:h-11 w-auto object-contain drop-shadow-[0_0_12px_rgba(212,175,55,0.3)] transition-all group-hover:drop-shadow-[0_0_18px_rgba(212,175,55,0.6)]"
-            />
-          </Link>
+    <header className={`sticky top-0 z-50 transition-all duration-300 ${
+      scrolled 
+        ? 'bg-white/95 backdrop-blur-md shadow-sm border-b border-purple-100/70 py-2.5' 
+        : 'bg-white/90 backdrop-blur-sm border-b border-purple-100/40 py-3.5'
+    }`}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between gap-4">
+          
+          {/* Brand Logo */}
+          <div className="flex-shrink-0">
+            <Logo />
+          </div>
 
           {/* Desktop Navigation Links */}
-          <nav className="hidden xl:flex items-center gap-1.5 2xl:gap-2">
-            {NAV_LINKS.map((item) => (
+          <nav className="hidden xl:flex items-center space-x-1 lg:space-x-5 text-[14px] font-medium">
+            {navLinks.map((link) => (
               <NavLink
-                key={item.path}
-                to={item.path}
-                end={item.path === '/'}
+                key={link.name}
+                to={link.path}
                 className={({ isActive }) =>
-                  `relative px-2.5 py-1.5 text-[11px] 2xl:text-xs font-semibold tracking-[0.18em] transition-all duration-300 uppercase rounded-sm ${
+                  `relative py-1.5 transition-colors whitespace-nowrap ${
                     isActive
-                      ? 'text-[#FFF2BE] font-bold drop-shadow-[0_0_8px_rgba(212,175,55,0.5)]'
-                      : 'text-[#C7C2B2] hover:text-[#FAF7EE] hover:bg-white/[0.03]'
+                      ? 'text-[#FF8A00] font-semibold after:content-[""] after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-[#FF8A00] after:rounded-full'
+                      : 'text-[#3E2F5B] hover:text-[#FF8A00]'
                   }`
                 }
               >
-                {({ isActive }) => (
-                  <>
-                    <span>{item.name}</span>
-                    {isActive && (
-                      <span className="absolute bottom-0 inset-x-2 h-[2px] bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent shadow-[0_0_8px_#D4AF37]" />
-                    )}
-                  </>
-                )}
+                {link.name}
               </NavLink>
             ))}
+
+            {/* More Links Dropdown */}
+            <div className="relative">
+              <button
+                onClick={() => setMoreDropdownOpen(!moreDropdownOpen)}
+                onBlur={() => setTimeout(() => setMoreDropdownOpen(false), 200)}
+                className="flex items-center gap-1 py-1.5 text-[#3E2F5B] hover:text-[#FF8A00] transition-colors"
+                aria-label="More navigation links"
+              >
+                <span>More</span>
+                <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${moreDropdownOpen ? 'rotate-180' : ''}`} />
+              </button>
+
+              {moreDropdownOpen && (
+                <div className="absolute top-full right-0 mt-2 w-64 bg-white rounded-2xl shadow-xl border border-purple-100 p-2 z-50 animate-in fade-in slide-in-from-top-2 duration-150">
+                  {moreLinks.map((item) => (
+                    <Link
+                      key={item.name}
+                      to={item.path}
+                      className="block px-3 py-2.5 rounded-xl hover:bg-[#FAF6FD] transition-colors text-left group"
+                    >
+                      <div className="text-sm font-semibold text-[#1C0B38] group-hover:text-[#FF8A00]">
+                        {item.name}
+                      </div>
+                      <div className="text-xs text-gray-500 font-normal">
+                        {item.desc}
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
           </nav>
 
-          {/* Right Action Area */}
-          <div className="flex items-center gap-3 sm:gap-4">
-            {/* Ambient Sound Toggle */}
-            <AudioAtmosphere />
-
-            {/* Desktop Sponsor CTA */}
-            <Link
-              to="/sponsors"
-              className="hidden sm:inline-flex items-center gap-1.5 px-4 sm:px-5 py-2 sm:py-2.5 rounded-sm text-[11px] font-semibold tracking-[0.2em] uppercase transition-all duration-300 border border-[#D4AF37]/60 bg-gradient-to-r from-[#D4AF37]/20 via-[#D4AF37]/10 to-transparent text-[#FAF7EE] hover:border-[#D4AF37] hover:bg-[#D4AF37] hover:text-black hover:shadow-[0_0_20px_rgba(212,175,55,0.4)]"
-            >
-              <Sparkles className="w-3.5 h-3.5 text-[#D4AF37] group-hover:text-black" />
-              <span>SPONSOR HEIA</span>
-            </Link>
-
-            {/* Mobile / Tablet Menu Hamburger Button */}
+          {/* Right Action Buttons */}
+          <div className="hidden lg:flex items-center space-x-3.5">
+            {/* Search Button */}
             <button
-              onClick={() => setMobileMenuOpen(true)}
-              className="xl:hidden p-2 rounded border border-[#D4AF37]/30 text-[#D4AF37] hover:border-[#D4AF37] hover:bg-white/5 transition-colors"
-              aria-label="Open Navigation Menu"
+              onClick={onOpenSearch}
+              className="p-2 text-[#3E2F5B] hover:text-[#FF8A00] hover:bg-purple-50 rounded-full transition-colors"
+              title="Search Cineport"
+              aria-label="Search"
             >
-              <Menu className="w-6 h-6" />
+              <Search className="w-4.5 h-4.5" />
+            </button>
+
+            {/* Sign In Button */}
+            <button
+              onClick={onOpenSignIn}
+              className="flex items-center gap-1.5 text-sm font-medium text-[#3E2F5B] hover:text-[#FF8A00] px-3 py-1.5 rounded-full hover:bg-purple-50 transition-colors"
+            >
+              <User className="w-4 h-4" />
+              <span>Sign In</span>
+            </button>
+
+            {/* Book Tickets CTA Button */}
+            <button
+              onClick={onOpenBooking}
+              className="btn-primary text-sm py-2 px-5 shadow-sm hover:shadow-md"
+            >
+              <Film className="w-3.5 h-3.5" />
+              <span>Book Tickets</span>
             </button>
           </div>
-        </div>
-      </header>
 
-      {/* Fullscreen Mobile Navigation Drawer */}
-      <MobileDrawer
-        isOpen={mobileMenuOpen}
-        onClose={() => setMobileMenuOpen(false)}
-        links={NAV_LINKS}
-      />
-    </>
+          {/* Mobile Menu Button */}
+          <div className="flex items-center space-x-2 xl:hidden">
+            <button
+              onClick={onOpenBooking}
+              className="btn-primary text-xs py-1.5 px-3.5 sm:hidden"
+            >
+              Book
+            </button>
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="p-2 text-[#1C0B38] hover:bg-purple-50 rounded-xl transition-colors"
+              aria-label="Toggle mobile menu"
+            >
+              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+      {/* Mobile Drawer Menu */}
+      {mobileMenuOpen && (
+        <div className="xl:hidden bg-white border-b border-purple-100 shadow-xl px-4 pt-3 pb-6 animate-in slide-in-from-top-4 duration-200">
+          <div className="flex flex-col space-y-1">
+            {navLinks.map((link) => (
+              <NavLink
+                key={link.name}
+                to={link.path}
+                className={({ isActive }) =>
+                  `px-3 py-2.5 rounded-xl font-medium text-sm transition-colors ${
+                    isActive
+                      ? 'bg-amber-50 text-[#FF8A00] font-semibold'
+                      : 'text-[#3E2F5B] hover:bg-purple-50'
+                  }`
+                }
+              >
+                {link.name}
+              </NavLink>
+            ))}
+
+            <div className="pt-2 pb-1 border-t border-purple-100 my-1">
+              <span className="px-3 text-xs font-semibold uppercase tracking-wider text-purple-400">
+                Explore More
+              </span>
+            </div>
+
+            {moreLinks.map((link) => (
+              <Link
+                key={link.name}
+                to={link.path}
+                className="px-3 py-2 rounded-xl text-sm font-medium text-[#3E2F5B] hover:bg-purple-50"
+              >
+                {link.name}
+              </Link>
+            ))}
+
+            <div className="pt-4 border-t border-purple-100 space-y-2.5">
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  onOpenSearch();
+                }}
+                className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl border border-purple-200 text-sm font-medium text-[#1C0B38]"
+              >
+                <Search className="w-4 h-4" />
+                <span>Search Cineport</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  onOpenSignIn();
+                }}
+                className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl border border-purple-200 text-sm font-medium text-[#1C0B38]"
+              >
+                <User className="w-4 h-4" />
+                <span>Sign In / Cineport Club</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  onOpenBooking();
+                }}
+                className="w-full btn-primary py-3 text-sm justify-center"
+              >
+                <Film className="w-4 h-4" />
+                <span>Book Tickets Online</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </header>
   );
 }

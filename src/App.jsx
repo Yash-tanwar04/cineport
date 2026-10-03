@@ -1,70 +1,98 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+
+// Layout Components
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
-import CustomCursor from './components/CustomCursor';
-import ParticleBackground from './components/ParticleBackground';
-import ScrollToTop from './components/ScrollToTop';
-import Trophy3D from './components/Trophy3D';
-import MobileTrophyBackground from './components/MobileTrophyBackground';
 
-// Pages
+// Modals
+import BookingModal from './components/BookingModal';
+import SearchModal from './components/SearchModal';
+import SignInModal from './components/SignInModal';
+
+// 13 Pages matching PDF
 import Home from './pages/Home';
+import Cinemas from './pages/Cinemas';
+import Experiences from './pages/Experiences';
+import FoodDrink from './pages/FoodDrink';
+import Events from './pages/Events';
+import PartnerWithUs from './pages/PartnerWithUs';
+import Investors from './pages/Investors';
 import About from './pages/About';
-import Experience from './pages/Experience';
-import Awards from './pages/Awards';
-import ShowFlow from './pages/ShowFlow';
-import Celebrities from './pages/Celebrities';
-import Performances from './pages/Performances';
-import Legacy from './pages/Legacy';
-import Sponsors from './pages/Sponsors';
-import Media from './pages/Media';
+import Club from './pages/Club';
+import NightBuilder from './pages/NightBuilder';
+import Careers from './pages/Careers';
+import Stories from './pages/Stories';
 import Contact from './pages/Contact';
 
+// Scroll to top helper
+function ScrollToTop() {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
+  return null;
+}
+
 export default function App() {
+  const [bookingModalOpen, setBookingModalOpen] = useState(false);
+  const [searchModalOpen, setSearchModalOpen] = useState(false);
+  const [signInModalOpen, setSignInModalOpen] = useState(false);
+
   return (
-    <Router>
-      <div className="relative min-h-screen bg-[#050507] text-[#EDE8D0] overflow-x-hidden selection:bg-[#D4AF37]/30 selection:text-[#FFF8DC]">
-        {/* Mobile Background Trophy Silhouette & Backlight Aura */}
-        <MobileTrophyBackground />
+    <BrowserRouter>
+      <ScrollToTop />
+      <div className="min-h-screen flex flex-col bg-[#FAF8FD] text-[#1C0B38]">
+        
+        {/* Navigation Bar */}
+        <Navbar
+          onOpenBooking={() => setBookingModalOpen(true)}
+          onOpenSearch={() => setSearchModalOpen(true)}
+          onOpenSignIn={() => setSignInModalOpen(true)}
+        />
 
-        {/* Ambient Gold Particle Dust */}
-        <ParticleBackground />
-
-        {/* 3D Rotating HEIA Trophy Model (Desktop/Laptop left side background) */}
-        <Trophy3D />
-
-        {/* Magnetic Gold Desktop Cursor */}
-        <CustomCursor />
-
-        {/* Scroll To Top on Route Changes */}
-        <ScrollToTop />
-
-        {/* Sticky Luxury Navbar */}
-        <Navbar />
-
-        {/* Main Content Area in Foreground */}
-        <main className="relative z-10 lg:pl-32 xl:pl-40 2xl:pl-48 transition-[padding] duration-300">
+        {/* Page Content */}
+        <main className="flex-1">
           <Routes>
-            <Route path="/" element={<Home />} />
+            <Route path="/" element={<Home onOpenBooking={() => setBookingModalOpen(true)} />} />
+            <Route path="/cinemas" element={<Cinemas onOpenBooking={() => setBookingModalOpen(true)} />} />
+            <Route path="/experiences" element={<Experiences />} />
+            <Route path="/food-drink" element={<FoodDrink />} />
+            <Route path="/events" element={<Events />} />
+            <Route path="/partner" element={<PartnerWithUs />} />
+            <Route path="/investors" element={<Investors />} />
             <Route path="/about" element={<About />} />
-            <Route path="/experience" element={<Experience />} />
-            <Route path="/awards" element={<Awards />} />
-            <Route path="/show-flow" element={<ShowFlow />} />
-            <Route path="/celebrities" element={<Celebrities />} />
-            <Route path="/performances" element={<Performances />} />
-            <Route path="/legacy" element={<Legacy />} />
-            <Route path="/sponsors" element={<Sponsors />} />
-            <Route path="/media" element={<Media />} />
+            <Route path="/club" element={<Club onOpenSignIn={() => setSignInModalOpen(true)} />} />
+            <Route path="/night-builder" element={<NightBuilder />} />
+            <Route path="/careers" element={<Careers />} />
+            <Route path="/stories" element={<Stories />} />
+            <Route path="/news" element={<Stories />} />
             <Route path="/contact" element={<Contact />} />
-            {/* Catch-all redirect to Home */}
-            <Route path="*" element={<Navigate to="/" replace />} />
+            {/* Fallback */}
+            <Route path="*" element={<Home onOpenBooking={() => setBookingModalOpen(true)} />} />
           </Routes>
         </main>
 
-        {/* Monolithic Black & Gold Footer */}
+        {/* Footer */}
         <Footer />
+
+        {/* Global Modals */}
+        <BookingModal
+          isOpen={bookingModalOpen}
+          onClose={() => setBookingModalOpen(false)}
+        />
+        <SearchModal
+          isOpen={searchModalOpen}
+          onClose={() => setSearchModalOpen(false)}
+        />
+        <SignInModal
+          isOpen={signInModalOpen}
+          onClose={() => setSignInModalOpen(false)}
+        />
+
       </div>
-    </Router>
+    </BrowserRouter>
   );
 }
